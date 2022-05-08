@@ -407,7 +407,6 @@ FodyWeavers.xsd
 .idea
 *.iml
 .DS_Store
-.jar
 
 .vscode/**/*
 !.vscode/launch.json
