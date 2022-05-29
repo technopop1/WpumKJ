@@ -97,22 +97,22 @@ public class AiPlayer(pS: String, myClass: String) : Player(pS, myClass) {
     private var whoseMove: String = playerState
 
     override fun move() {
-
-        var bestEval: Int = if (playerState == "x") Int.MIN_VALUE else Int.MAX_VALUE
+        // var boards : MutableList<MutableList<String>> : mutableListOf()
+        var score: Int = if (playerState == "x") Int.MIN_VALUE else Int.MAX_VALUE
         var index: Int = -1
         for (i in 0..8) {
             if (board.board[i] == "-") {
                 board.board[i] = playerState
-                var eval: Int = minimax(board, 0, if (playerState == "x") false else true)
+                var childScore: Int = minimax(board, 0, if (playerState == "x") false else true)
                 board.board[i] = "-"
                 if (playerState == "x") {
-                    if (eval > bestEval) {
-                        bestEval = eval
+                    if (childScore > score) {
+                        score = childScore
                         index = i
                     }
                 } else {
-                    if (eval < bestEval) {
-                        bestEval = eval
+                    if (childScore < score) {
+                        score = childScore
                         index = i
                     }
                 }
@@ -125,38 +125,34 @@ public class AiPlayer(pS: String, myClass: String) : Player(pS, myClass) {
 
     public fun minimax(node: Board, depth: Int, maximizing: Boolean): Int {
 
-        // if (!node.board.contains("-")) {
-        if (node.getWinner() != "-") {
-
+        if (!node.board.contains("-")) {
             var ewin = node.getWinner()
             if (ewin == "x") return 1 else if (ewin == "o") return -1 else return 0
         }
-
+        var score = if(maximizing) -10 else 10
         if (maximizing) {
-            var maxEval: Int = -10
             for (i in 0..8) {
                 if (node.board[i] == "-") {
                     node.board[i] = "x"
-                    var eval: Int = minimax(node, depth + 1, false)
+                    var childScore: Int = minimax(node, depth + 1, false)
                     node.board[i] = "-"
                     // maxEval = 
-                    if (eval > maxEval) 
-                        maxEval = eval 
+                    if (childScore > score) 
+                    score = childScore 
                 }
             }
-            return maxEval
+            return score
         } else {
-            var minEval: Int = 10
             for (i in 0..8) {
                 if (node.board[i] == "-") {
                     node.board[i] = "o"
-                    var eval: Int = minimax(node, depth + 1, true)
+                    var childScore: Int = minimax(node, depth + 1, true)
                     node.board[i] = "-"
-                    if (eval < minEval) 
-                        minEval = eval 
+                    if (childScore < score) 
+                    score = childScore 
                 }
             }
-            return minEval
+            return score
         }
 
         // return alfabeta(node, głębokość, -∞, +∞)
