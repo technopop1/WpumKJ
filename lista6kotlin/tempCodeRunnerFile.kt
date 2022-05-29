@@ -1,0 +1,1 @@
+ playerChoice = readLine()!!.lowercase()
