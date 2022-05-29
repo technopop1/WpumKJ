@@ -1,1 +1,1 @@
- playerChoice = readLine()!!.lowercase()
+e += childValue
