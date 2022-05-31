@@ -95,7 +95,7 @@ public class RandomPlayer(pS: String, myClass: String) : Player(pS, myClass) {
 
 public class AiPlayer(pS: String, myClass: String) : Player(pS, myClass) {
     private var whoseMove: String = playerState
-
+    //  private var countMoves : Int = 0
     override fun move() {
         // var boards : MutableList<MutableList<String>> : mutableListOf()
         var score: Int = if (playerState == "x") Int.MIN_VALUE else Int.MAX_VALUE
@@ -119,12 +119,18 @@ public class AiPlayer(pS: String, myClass: String) : Player(pS, myClass) {
             }
         }
         board.board[index] = playerState
-
+        //  println(countMoves)
+        //  countMoves = 0
         // whoseMove = playerState
     }
 
     public fun minimax(node: Board, depth: Int, maximizing: Boolean): Int {
-
+        return alfabeta(node, depth, maximizing, Int.MIN_VALUE, Int.MAX_VALUE)
+    }
+    private fun alfabeta(node: Board, depth: Int, maximizing: Boolean, alfa : Int, beta : Int) : Int {
+        //  countMoves += 1
+        var tmpAlfa = alfa
+        var tmpBeta = beta
         if (!node.board.contains("-")) {
             var ewin = node.getWinner()
             if (ewin == "x") return 1 else if (ewin == "o") return -1 else return 0
@@ -134,28 +140,28 @@ public class AiPlayer(pS: String, myClass: String) : Player(pS, myClass) {
             for (i in 0..8) {
                 if (node.board[i] == "-") {
                     node.board[i] = "x"
-                    var childScore: Int = minimax(node, depth + 1, false)
+                    var childScore: Int = alfabeta(node, depth, false, tmpAlfa, tmpBeta)
                     node.board[i] = "-"
-                    // maxEval = 
-                    if (childScore > score) 
-                    score = childScore 
+                    // score = 
+                    if (childScore > score) score = childScore 
+                    if (childScore > tmpAlfa) tmpAlfa = childScore
+                    if (beta <= tmpAlfa) break // zmiejszenie liczby sprawdzanych wezlow
                 }
             }
-            return score
+            return tmpAlfa
         } else {
             for (i in 0..8) {
                 if (node.board[i] == "-") {
                     node.board[i] = "o"
-                    var childScore: Int = minimax(node, depth + 1, true)
+                    var childScore: Int = alfabeta(node, depth, true, tmpAlfa, tmpBeta)
                     node.board[i] = "-"
-                    if (childScore < score) 
-                    score = childScore 
+                    if (childScore < score) score = childScore 
+                    if (childScore < tmpBeta) tmpBeta = childScore
+                    if (beta <= tmpAlfa) break
                 }
             }
-            return score
+            return tmpBeta
         }
-
-        // return alfabeta(node, głębokość, -∞, +∞)
 
     }
     private fun gen(inBoard: MutableList<String>, state: String): MutableList<MutableList<String>> {
